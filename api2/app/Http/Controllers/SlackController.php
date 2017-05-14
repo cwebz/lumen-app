@@ -28,17 +28,17 @@ class SlackController extends Controller
     public function handleRequest(Request $request)
     {   
         //Get the text header field which has the command
-        if($request->header('command') !== '/mfl'){
+        if($request->input('command') !== '/mfl'){
             return "Not a mfl slash command";
         }
 
         //Make sure a command was submitted
-        if(!$request->header('text')){
+        if(!$request->input('text')){
             return "No command was submitted";
         }
 
         //Get the parts of the comman, could be 1 or 2 commands
-        $textParts = explode( " ", $request->header('text'));
+        $textParts = explode( " ", $request->input('text'));
         
         //The base command
         $command = $textParts[0];
@@ -52,7 +52,7 @@ class SlackController extends Controller
                 # code...
                 break;
         }
-        var_dump( $textParts );
+        //var_dump( $textParts );
         //var_dump( $request->header() );
         exit();
     }
@@ -71,7 +71,7 @@ class SlackController extends Controller
         $slackMessage .= "\n" . ">*picks* [team_#]  ~ _Get the picks of a team e.g. /mfl picks 7_";
         $slackMessage .= "\n" . ">*assets* [team_#]  ~ _Get the roster/picks of a team e.g. /mfl roster 4_";
 
-        $this->slackClass->sendSlackMsg($slackMessage, $request->header('response_url'));
-        var_dump($request->header('response_url'));
+        $this->slackClass->sendSlackMsg($slackMessage, $request->input('response_url'));
+        //var_dump($request->header('response_url'));
     }
 }

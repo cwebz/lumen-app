@@ -18,7 +18,7 @@ $app->get('/', function () use ($app) {
 });
 
 //This is the only route for the slack integration
-$app->post('api/slack', 'SlackController@handleRequest');
+$app->post('slack', 'SlackController@handleRequest');
 // $app->post('api/slack', function (Request $request) {
 //     var_dump($request);
 //     exit();
