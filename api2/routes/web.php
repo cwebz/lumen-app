@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\SlackController;
+use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -14,3 +16,10 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+//This is the only route for the slack integration
+$app->post('api/slack', 'SlackController@handleRequest');
+// $app->post('api/slack', function (Request $request) {
+//     var_dump($request);
+//     exit();
+// });
