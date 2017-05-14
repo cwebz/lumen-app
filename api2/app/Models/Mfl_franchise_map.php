@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Mfl_franchise_map extends Model
 {
 
+    protected $table = 'mfl_franchise_map';
 
 
     
