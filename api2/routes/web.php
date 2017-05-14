@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\SlackController;
 use Illuminate\Http\Request;
+use App\Models\Mfl_franchise_map;
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -19,7 +20,10 @@ $app->get('/', function () use ($app) {
 
 //This is the only route for the slack integration
 $app->post('slack', 'SlackController@handleRequest');
-// $app->post('api/slack', function (Request $request) {
-//     var_dump($request);
-//     exit();
-// });
+
+$app->get('test', function() use ($app) {
+    
+    $count = Mfl_franchise_map::query()->get()->count();
+    var_dump($count);
+    return "working";
+});

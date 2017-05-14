@@ -33,7 +33,7 @@ class SlackClass{
     * @param string $message
     * @param string $slackWebhook
     */
-    public function sendSlackMsg($slackMessage, $slackWebhook)
+    static public function sendSlackMsg($slackMessage, $slackWebhook)
     {
     // Make your message
     $data = array('payload' => json_encode(array('text' => $slackMessage)));

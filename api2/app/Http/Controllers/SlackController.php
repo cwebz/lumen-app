@@ -7,7 +7,7 @@ use App\Classes\SlackClass;
 
 class SlackController extends Controller
 {
-    protected $slackClass;
+    //protected $slackClass;
 
     /**
      * Create a new controller instance.
@@ -16,7 +16,7 @@ class SlackController extends Controller
      */
     public function __construct()
     {
-        $this->slackClass = new SlackClass();
+        //$this->slackClass = new SlackClass();
     }
 
     /**
@@ -71,7 +71,7 @@ class SlackController extends Controller
         $slackMessage .= "\n" . ">*picks* [team_#]  ~ _Get the picks of a team e.g. /mfl picks 7_";
         $slackMessage .= "\n" . ">*assets* [team_#]  ~ _Get the roster/picks of a team e.g. /mfl roster 4_";
 
-        $this->slackClass->sendSlackMsg($slackMessage, $request->input('response_url'));
+        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
         //var_dump($request->header('response_url'));
     }
 }
