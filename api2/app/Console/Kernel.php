@@ -5,7 +5,7 @@ namespace App\Console;
 use App\Console\Commands\FranchiseMaps;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
-use Artisan;
+use Illuminate\Support\Facades\Artisan;
 
 class Kernel extends ConsoleKernel
 {
@@ -28,7 +28,7 @@ class Kernel extends ConsoleKernel
     {
         //
         $schedule->call(function () {
-            Artisan::call(franchisemaps:update),
+            Artisan::call('franchisemaps:update');
         })->everyFiveMinutes();
     }
 }

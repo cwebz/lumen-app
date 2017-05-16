@@ -7,14 +7,14 @@ use App\Services\FranchiseMapService;
 
 
 
-class FranchiseMap extends Command
+class FranchiseMaps extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'franchisemap:update';
+    protected $signature = 'franchisemaps:update';
 
     /**
      * The console command description.
@@ -40,6 +40,6 @@ class FranchiseMap extends Command
      */
     public function handle()
     {
-        FranchiseMapService::updateFranchiseMap();
+        FranchiseMapService::update();
     }
 }
