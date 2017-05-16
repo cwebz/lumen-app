@@ -23,7 +23,11 @@ $app->post('slack', 'SlackController@handleRequest');
 
 $app->get('test', function() use ($app) {
     
-    $count = Mfl_franchise_map::query()->get()->count();
-    var_dump($count);
+    // $count = Mfl_franchise_map::query()->get()->count();
+    // var_dump($count);
+    Mfl_franchise_map::updateOrCreate(
+        ['league_franchise' => '12958_0001'],
+        ['franchise_name' => 'Commish']
+    );
     return "working";
 });
