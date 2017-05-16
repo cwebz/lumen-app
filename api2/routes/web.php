@@ -3,6 +3,9 @@
 use App\Http\Controllers\SlackController;
 use Illuminate\Http\Request;
 use App\Models\Mfl_franchise_map;
+use App\Models\Mfl_slack_integration;
+use App\Classes\SlackClass;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -29,5 +32,31 @@ $app->get('test', function() use ($app) {
         ['league_franchise' => '12958_0001'],
         ['franchise_name' => 'Commish']
     );
+    return "working";
+});
+
+$app->get('cron', function() use ($app) {
+    
+    //Let's get all integrations we have
+    $slacksIntegrated = Mfl_slack_integration::all();
+
+    //Loop through each integration and 
+    foreach($slacksIntegrated as $integration){
+        $leagueID = $integration->mfl_league_id;
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('league', $leagueID);
+        $mflDataObj = SlackClass::getMflData($mflDataUrl);
+
+        //Get array of franchises
+        $franchises = $mflDataObj->league->franchises->franchise;
+
+        //Loop through and build the maps
+        foreach($franchises as $franchise){
+            Mfl_franchise_map::updateOrCreate(
+                ["league_franchise" => "{$leagueID}_{$franchise->id}"],
+                ["franchise_name" => $franchise->name]
+            );
+        }
+    }
+
     return "working";
 });

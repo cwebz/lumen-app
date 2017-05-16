@@ -47,6 +47,9 @@ class SlackController extends Controller
             case 'help':
                 $this->help($request);
                 break;
+            case 'whois':
+                $this->getFranchiseMap($request);
+                break;
             
             default:
                 # code...
@@ -73,5 +76,15 @@ class SlackController extends Controller
 
         SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
         //var_dump($request->header('response_url'));
+    }
+
+    /**
+    * Return slack message displaying team ID's and name
+    *
+    * @param Rquest $request 
+    * @return JSON
+    */
+    private function getFranchiseMap($request){
+        
     }
 }
