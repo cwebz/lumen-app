@@ -2,8 +2,10 @@
 
 namespace App\Console;
 
+use App\Console\Commands\FranchiseMaps;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
+use Artisan;
 
 class Kernel extends ConsoleKernel
 {
@@ -13,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        FranchiseMaps::class,
     ];
 
     /**
@@ -25,5 +27,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         //
+        $schedule->call(function () {
+            Artisan::call(franchisemaps:update),
+        });
     }
 }
