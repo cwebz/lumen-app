@@ -29,6 +29,6 @@ class Kernel extends ConsoleKernel
         //
         $schedule->call(function () {
             Artisan::call('franchisemaps:update');
-        })->everyFiveMinutes();
+        })->daily();
     }
 }
