@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Classes\SlackClass;
+use App\Models\Mfl_franchise_map;
 
 class SlackController extends Controller
 {
@@ -85,6 +86,18 @@ class SlackController extends Controller
     * @return JSON
     */
     private function getFranchiseMap($request){
-        
+
+        $slackMessage = 'Franchises and IDs:';
+        $franchises = Mfl_franchise_map::all();
+
+        foreach( $franchises as $franchise){
+            //Returns League ID and Franchise ID
+            $parts = explode('_', $franchise->league_franchise);
+            $franchiseID = $parts[1];
+
+            $slackMessage .= "\n" . ">{$franchiseID} - *{$franchise->franchise_name}*";
+        }
+
+        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
     }
 }
