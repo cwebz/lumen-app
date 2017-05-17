@@ -14,7 +14,9 @@ class Mfl_players_table extends Model
         'id',
         'name',
         'position',
-        'team'
+        'team',
+        'created_at',
+        'updated_at'
     ];
     
 }
