@@ -17,12 +17,14 @@ class PlayersTableService
 		$mflDataObj = SlackClass::getMflData($mflDataUrl);
 
 		//Get array of franchises
-		$franchises = $mflDataObj->league->franchises->franchise;
+		$players = $mflDataObj->players->player;
 
-		Mfl_franchise_map::updateOrCreate(
-			["league_franchise" => "{$leagueID}_{$franchise->id}"],
-			["franchise_name" => $franchise->name]
-		);
+		foreach( $players as $player){
+			Mfl_franchise_map::updateOrCreate(
+				["league_franchise" => "{$leagueID}_{$franchise->id}"],
+				["franchise_name" => $franchise->name]
+			);
+		}
 	}
 }
 

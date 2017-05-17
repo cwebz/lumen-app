@@ -7,7 +7,7 @@ use App\Services\PlayersTableService;
 
 
 
-class FranchiseMaps extends Command
+class PlayersTable extends Command
 {
     /**
      * The name and signature of the console command.
