@@ -20,9 +20,12 @@ class PlayersTableService
 		$players = $mflDataObj->players->player;
 
 		foreach( $players as $player){
-			Mfl_franchise_map::updateOrCreate(
-				["league_franchise" => "{$leagueID}_{$franchise->id}"],
-				["franchise_name" => $franchise->name]
+			Mfl_players_table::updateOrCreate(
+				["id" => $player->id],
+				["name" => $player->name,
+				'position' => $player->position,
+				'team' => $player->team
+				]
 			);
 		}
 	}
