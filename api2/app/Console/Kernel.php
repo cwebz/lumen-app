@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\FranchiseMaps;
 use App\Console\Commands\PlayersTable;
+use App\Console\Commands\TradeBait;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
@@ -37,5 +38,10 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Artisan::call('playerstable:update');
         })->daily();
+
+        //Retrieves JSON and notify od Trade Bait Updates
+        $schedule->call(function () {
+            Artisan::call('tradebait:update');
+        })->everyFiveMinutes();
     }
 }
