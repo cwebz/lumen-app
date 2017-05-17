@@ -38,7 +38,7 @@ class SlackClass{
     * @param string $additionalArgs
     * @return string
     */
-    public static function getMflLeagueDataUrl($dataType, $leagueID, $week = '', $additionalArgs = ''){
+    public static function getMflLeagueDataUrl($dataType, $leagueID = '', $week = '', $additionalArgs = ''){
        
         $mflBaseUrl = 'https://www74.myfantasyleague.com/2017/export?';
 

@@ -8,6 +8,10 @@ use App\Classes\SlackClass;
 
 class FranchiseMapService
 {
+
+	/**
+	* Gets the JSON of the league and imports ID=>Franchise name 
+	*/
 	public static function update(){
 		//Let's get all integrations we have
 		$slacksIntegrated = Mfl_slack_integration::all();
