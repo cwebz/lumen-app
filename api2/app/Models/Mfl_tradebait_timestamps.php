@@ -1,19 +1,23 @@
 <?php
 
-# app/Models/Mfl_franchise_map.php 
+# app/Models/Mfl_tradebait_timestamps.php 
 
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Mfl_franchise_map extends Model
+class Mfl_tradebait_timestamps extends Model
 {
 
     protected $table = 'mfl_tradebait_timestamps';
 
+    protected $primaryKey = 'league_team';
+
+    public $incrementing = false;
+
     protected $fillable = [
         'league_franchise',
-        'franchise_name',
+        'tradebait_timestamp',
         'created_at',
         'updated_at'
     ];

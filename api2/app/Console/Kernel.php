@@ -19,6 +19,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         FranchiseMaps::class,
         PlayersTable::class,
+        TradeBait::class,
     ];
 
     /**

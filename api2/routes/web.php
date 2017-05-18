@@ -4,6 +4,7 @@ use App\Http\Controllers\SlackController;
 use Illuminate\Http\Request;
 use App\Models\Mfl_franchise_map;
 use App\Models\Mfl_slack_integration;
+use App\Models\Mfl_tradebait_timestamps;
 use App\Classes\SlackClass;
 
 /*
@@ -37,26 +38,6 @@ $app->get('test', function() use ($app) {
 
 $app->get('cron', function() use ($app) {
     
-    //Let's get all integrations we have
-    $slacksIntegrated = Mfl_slack_integration::all();
-
-    //Loop through each integration and 
-    foreach($slacksIntegrated as $integration){
-        $leagueID = $integration->mfl_league_id;
-        $mflDataUrl = SlackClass::getMflLeagueDataUrl('league', $leagueID);
-        $mflDataObj = SlackClass::getMflData($mflDataUrl);
-
-        //Get array of franchises
-        $franchises = $mflDataObj->league->franchises->franchise;
-
-        //Loop through and build the maps
-        foreach($franchises as $franchise){
-            Mfl_franchise_map::updateOrCreate(
-                ["league_franchise" => "{$leagueID}_{$franchise->id}"],
-                ["franchise_name" => $franchise->name]
-            );
-        }
-    }
-
+    var_dump(MFl_tradebait_timestamps::find("1234_0001"));
     return "working";
 });

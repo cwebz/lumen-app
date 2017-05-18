@@ -53,7 +53,7 @@ class SlackClass{
 
     }
 
-    /*
+    /* DEPRECATED?
     * Generate the URL for getting information on players
     */
     public function getMflPlayerDataUrl($players){
@@ -90,6 +90,32 @@ class SlackClass{
     }
 
 
+    /**
+    * Separate out the picks in the string and return
+    *
+    * @param string $combinedString
+    * @return Array 
+    */
+    public static function separatePlayersPicks($combinedString){
+        $splitArray = new stdClass();
+        $playerIds = [];
+        $draftPickIds = [];
+
+        $playersPicksArray = explode(",", $combinedString);
+        //Loop through and assign to proper array
+        foreach($playersPicksArray as $key => $id){
+            
+            if(strpos($id, 'DP_') === 0 || strpos($id, 'FP_') === 0){
+                array_push($draftPickIds, $id);
+            }elseif($id !== ""){
+                array_push($playerIds, $id);
+            }
+        }
+
+        $splitArray->draftPicks = $draftPickIds;
+        $splitArray->players = $playerIds;
+        return $splitArray;
+    }
 
 
 
@@ -99,7 +125,7 @@ class SlackClass{
     * @param string $message
     * @param string $slackWebhook
     */
-    static public function sendSlackMsg($slackMessage, $slackWebhook)
+    public static function sendSlackMsg($slackMessage, $slackWebhook)
     {
     // Make your message
     $data = array('payload' => json_encode(array('text' => $slackMessage)));
