@@ -7,6 +7,8 @@ use App\Models\Mfl_slack_integration;
 use App\Models\Mfl_tradebait_timestamps;
 use App\Classes\SlackClass;
 
+use App\Services\TradeBaitService;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -38,6 +40,6 @@ $app->get('test', function() use ($app) {
 
 $app->get('cron', function() use ($app) {
     
-    var_dump(MFl_tradebait_timestamps::find("1234_0001"));
+    TradeBaitService::update();
     return "working";
 });

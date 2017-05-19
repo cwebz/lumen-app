@@ -11,7 +11,7 @@ class Mfl_tradebait_timestamps extends Model
 
     protected $table = 'mfl_tradebait_timestamps';
 
-    protected $primaryKey = 'league_team';
+    protected $primaryKey = 'league_franchise';
 
     public $incrementing = false;
 

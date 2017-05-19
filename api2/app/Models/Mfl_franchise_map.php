@@ -11,6 +11,8 @@ class Mfl_franchise_map extends Model
 
     protected $table = 'mfl_franchise_map';
 
+protected $primaryKey = 'league_franchise';
+
     protected $fillable = [
         'league_franchise',
         'franchise_name',
