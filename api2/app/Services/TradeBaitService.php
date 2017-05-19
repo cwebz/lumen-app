@@ -9,7 +9,11 @@ use App\Classes\SlackClass;
 
 class TradeBaitService
 {
-	protected $slackChannel = 'https://hooks.slack.com/services/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';
+	public static $slackChannel = 'https://hooks.slack.com/services/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';
+
+	// public function __construct(){
+	// 	$this->slackChannel = $slackChannel;
+	// }
 	/**
 	* Gets the JSON of the the players in mfl and imports them
 	*/
@@ -46,8 +50,6 @@ class TradeBaitService
 
                 $wanting = $tradeBait->inExchangeFor;
                 $franchiseName = SlackClass::getFranchiseName("{$leagueID}_{$franchiseID}");
-
-///////////////////////////
                 
                 //Get player names, team, pos and 
                 $playersSlackMsg = '';
@@ -73,11 +75,12 @@ class TradeBaitService
                 $fullSlackMsg .= "\nNotes:";
                 $fullSlackMsg .= "\n    {$prettyText}";
                 
-                SlackClass::sendSlackMsg($fullSlackMsg, $this->slackChannel);
+                SlackClass::sendSlackMsg($fullSlackMsg, self::$slackChannel);
 
+                Mfl_tradebait_timestamps::updateOrCreate(
+                	['league_franchise' => "{$leagueID}_{$franchiseID}"],
+                	['tradebait_timestamp' => $timestamp]);
             }
-
-
 		}
     }
 }
