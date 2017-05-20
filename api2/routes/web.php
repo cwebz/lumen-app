@@ -8,6 +8,7 @@ use App\Models\Mfl_tradebait_timestamps;
 use App\Classes\SlackClass;
 
 use App\Services\TradeBaitService;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,13 +30,9 @@ $app->post('slack', 'SlackController@handleRequest');
 
 $app->get('test', function() use ($app) {
     
-    // $count = Mfl_franchise_map::query()->get()->count();
-    // var_dump($count);
-    Mfl_franchise_map::updateOrCreate(
-        ['league_franchise' => '12958_0001'],
-        ['franchise_name' => 'Commish']
-    );
-    return "working";
+    Artisan::call('tradebait:update');
+
+    return "TEsting";
 });
 
 $app->get('cron', function() use ($app) {

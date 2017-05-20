@@ -9,11 +9,8 @@ use App\Classes\SlackClass;
 
 class TradeBaitService
 {
-	public static $slackChannel = 'https://hooks.slack.com/services/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';
+	//public static $slackChannel = 'https://hooks.slack.com/services/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';
 
-	// public function __construct(){
-	// 	$this->slackChannel = $slackChannel;
-	// }
 	/**
 	* Gets the JSON of the the players in mfl and imports them
 	*/
@@ -24,7 +21,12 @@ class TradeBaitService
 
 		//Need to loop through each site we have integrated
 		foreach($slacksIntegrated as $integration){
+            
+            //Get the MFL League ID for retreiving data
 		    $leagueID = $integration->mfl_league_id;
+
+            //Get the slack channel webhook that we are talking to
+            $slackChannel = $integration->tradebait_channel;
 
 		    //Build URL and retrieve the data
 		    $mflDataUrl = SlackClass::getMflLeagueDataUrl('tradeBait', $leagueID, '', '&INCLUDE_DRAFT_PICKS=1');
@@ -75,7 +77,7 @@ class TradeBaitService
                 $fullSlackMsg .= "\nNotes:";
                 $fullSlackMsg .= "\n    {$prettyText}";
                 
-                SlackClass::sendSlackMsg($fullSlackMsg, self::$slackChannel);
+                SlackClass::sendSlackMsg($fullSlackMsg, $slackChannel);
 
                 Mfl_tradebait_timestamps::updateOrCreate(
                 	['league_franchise' => "{$leagueID}_{$franchiseID}"],
