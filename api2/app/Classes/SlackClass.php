@@ -127,8 +127,8 @@ class SlackClass{
     */
     public static function getFranchiseName($franchiseID){
 
-        $dbTeam = Mfl_franchise_map::find($franchiseID);
-        return $dbTeam->franchise_name;
+        return Mfl_franchise_map::find($franchiseID)
+            ->franchise_name;
     }
 
 

@@ -28,12 +28,19 @@ $app->get('/', function () use ($app) {
 //This is the only route for the slack integration
 $app->post('slack', 'SlackController@handleRequest');
 
-$app->get('test', function() use ($app) {
+$app->get('trade', function() use ($app) {
     
-    Artisan::call('tradebait:update');
+    Artisan::call('checktrade:update');
 
     return "TEsting";
 });
+$app->get('bait', function() use ($app) {
+    
+    Artisan::call('checktrade:update');
+
+    return "TEsting";
+});
+$app->get('map', 'SlackController@getFranchiseMap');
 
 $app->get('cron', function() use ($app) {
     

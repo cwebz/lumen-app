@@ -32,7 +32,12 @@ class TradeBaitService
 		    $mflDataUrl = SlackClass::getMflLeagueDataUrl('tradeBait', $leagueID, '', '&INCLUDE_DRAFT_PICKS=1');
 		    $mflDataObj = SlackClass::getMflData($mflDataUrl);
 
-		    $tradeBaits = $mflDataObj->tradeBaits->tradeBait;
+            //Make sure we always put this in an array for simplicity
+            if(!is_array($mflDataObj->tradeBaits->tradeBait)){
+                $transactions[0] = $mflDataObj->tradeBaits->tradeBait;
+            }else{
+                $transactions = $mflDataObj->tradeBaits->tradeBait;
+            }
 
             foreach($tradeBaits as $tradeBait){
 
@@ -41,10 +46,11 @@ class TradeBaitService
                 $timestamp = $tradeBait->timestamp;
                 
                 //See if we have a match and whether or not to proceed
-                $dbTeam = MFl_tradebait_timestamps::find("{$leagueID}_{$franchiseID}");
+                $dbTimestamp = MFl_tradebait_timestamps::find("{$leagueID}_{$franchiseID}")
+                            ->tradebait_timestamp;
 
                 //If they exist and timestamp isn't different break out
-                if($dbTeam && $dbTeam->tradebait_timestamp === $timestamp){
+                if($dbTimestamp === $timestamp){
                     break;
                 }
 

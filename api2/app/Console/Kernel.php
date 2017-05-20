@@ -5,6 +5,8 @@ namespace App\Console;
 use App\Console\Commands\FranchiseMaps;
 use App\Console\Commands\PlayersTable;
 use App\Console\Commands\TradeBait;
+use App\Console\Commands\CheckTrade;
+
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 use Illuminate\Support\Facades\Artisan;
@@ -20,6 +22,7 @@ class Kernel extends ConsoleKernel
         FranchiseMaps::class,
         PlayersTable::class,
         TradeBait::class,
+        CheckTrade::class,
     ];
 
     /**
