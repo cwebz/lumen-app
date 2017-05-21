@@ -49,25 +49,26 @@ class SlackController extends Controller
         
         switch ($command) {
             case 'help':
-                $this->help($request);
+                echo $this->help($request);
                 break;
             case 'whois':
-                $this->getFranchiseMap($request);
+                echo $this->getFranchiseMap($request);
                 break;
             case 'roster':
-                if((int)$textParts[1] < 12 && (int)$textParts[1] >= 0){
-                    $this->getFranchiseRoster($request, $textParts[1]);
-                }else{
-                    //Some sort of error response here
-                }                
+                echo $this->getFranchiseRoster($request, $textParts[1]);           
                 break;
+            case 'picks':
+                echo $this->getFranchisePicks($request, $textParts[1]);
+                break;
+            case 'assets':
+                $slackMessage = $this->getFranchiseRoster($request, $textParts[1]);
+                $slackMessage .= "\n";
+                $slackMessage .= $this->getFranchisePicks($request, $textParts[1]);
+                echo $slackMessage;
             default:
                 # code...
                 break;
         }
-        //var_dump( $textParts );
-        //var_dump( $request->header() );
-        exit();
     }
     
     /**
@@ -84,8 +85,7 @@ class SlackController extends Controller
         $slackMessage .= "\n" . ">*picks* [team_#]  ~ _Get the picks of a team e.g. /mfl picks 7_";
         $slackMessage .= "\n" . ">*assets* [team_#]  ~ _Get the roster/picks of a team e.g. /mfl roster 4_";
 
-        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
-        //var_dump($request->header('response_url'));
+        return $slackMessage;
     }
 
     /**
@@ -117,7 +117,7 @@ class SlackController extends Controller
             $slackMessage .= "\n" . ">{$franchiseID} - *{$franchise->franchise_name}*";
         }
         
-        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
+        return $slackMessage;
     }
 
     /**
@@ -131,37 +131,79 @@ class SlackController extends Controller
 
         //Get the team_id from the request
         $leagueID = Mfl_slack_integration::find($request->input('team_id'))
-            ->mfl_league_id;
+                                                ->mfl_league_id;
 
         //Convert franchiseID to correct format 000#
-        switch (strlen($franchiseID)) {
-            case 1:
-                $franchiseID = "000{$franchiseID}";
-                break;
-            case 2:
-                $franchiseID = "00{$franchiseID}";
-                break;
-        }
+        $franchiseID = SlackClass::formatFranchiseID($franchiseID);
 
         //Retreive all franchises that belong to this team
         $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
                                                 ->franchise_name;
+        
+        ////!!!!!Add error log/slack to msg if team not found
 
         //Build URL and retrieve the data
-        $mflDataUrl = SlackClass::getMflLeagueDataUrl('rosters', $leagueID, '', "&FRANCHISE={$franchiseID}");
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('assets', $leagueID);
         $mflDataObj = SlackClass::getMflData($mflDataUrl);
 
-        $playerObjs = $mflDataObj->rosters->franchise->player;
-        $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
+        $franchises = $mflDataObj->assets->franchise;
 
-        $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
-        $slackMessage = ">*{$franchiseName}* roster:\n>";
-        $slackMessage .= implode("\n>", $prettyPlayers);
+        foreach($franchises as $franchise){
+            if($franchise->id === $franchiseID){
+                $playerObjs = $franchise->players->player;
+                $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
 
-        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
+                $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
+                $slackMessage = ">*{$franchiseName}* roster:\n>";
+                $slackMessage .= implode("\n>", $prettyPlayers);
+            }
+        }
+
+        return $slackMessage;
 
     }
 
+    /**
+    * Return slack message displaying the requested franchises draft picks
+    *
+    * @param Rquest $request
+    * @param array $textParts
+    * @return JSON
+    */
+    public function getFranchisePicks($request, $franchiseID){
 
+        //Get the team_id from the request
+        $leagueID = Mfl_slack_integration::find($request->input('team_id'))
+                                                ->mfl_league_id;
+
+        //Convert franchiseID to correct format 000#
+        $franchiseID = SlackClass::formatFranchiseID($franchiseID);
+
+        //Retreive all franchises that belong to this team
+        $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
+                                                ->franchise_name;
+        
+        ////!!!!!Add error log/slack to msg if team not found
+
+        //Build URL and retrieve the data
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('assets', $leagueID);
+        $mflDataObj = SlackClass::getMflData($mflDataUrl);
+
+        $franchises = $mflDataObj->assets->franchise;
+
+        foreach($franchises as $franchise){
+            if($franchise->id === $franchiseID){
+                //do work
+                $draftPickObjs = $franchise->futureYearDraftPicks->draftPick;
+                $draftPickIDs = array_map(function($o){ return $o->pick; }, $draftPickObjs);
+                $prettyDraftPicks = SlackClass::getPrettyDraftPicks($draftPickIDs, $leagueID);
+
+                $slackMessage = ">*{$franchiseName}* draft picks:\n>";
+                $slackMessage .= implode("\n>", $prettyDraftPicks);              
+            }
+            
+        }
+        return $slackMessage;
+    }
 
 }

@@ -34,9 +34,9 @@ class TradeBaitService
 
             //Make sure we always put this in an array for simplicity
             if(!is_array($mflDataObj->tradeBaits->tradeBait)){
-                $transactions[0] = $mflDataObj->tradeBaits->tradeBait;
+                $tradeBaits[0] = $mflDataObj->tradeBaits->tradeBait;
             }else{
-                $transactions = $mflDataObj->tradeBaits->tradeBait;
+                $tradeBaits = $mflDataObj->tradeBaits->tradeBait;
             }
 
             foreach($tradeBaits as $tradeBait){

@@ -90,6 +90,34 @@ class SlackClass{
         return $mflDataObj;
     }
 
+    /**
+    * Retrieve the players from the DB
+    *
+    * @param array $playerIDs 
+    * @return Eloquent Object
+    */
+    public static function queryPlayers($playerIDs){
+
+        return Mfl_players_table::whereIn('id', $playerIDs)
+                                        ->orderBy('name', 'asc')
+                                        ->get();
+    }
+
+    /**
+    * Convert slack easy franchise ID to MFL format
+    *
+    * @param
+    * @return string 
+    */
+    public static function formatFranchiseID($franchiseID){
+        //Convert franchiseID to correct format 000#
+        switch (strlen($franchiseID)) {
+            case 1:
+                return $franchiseID = "000{$franchiseID}";
+            case 2:
+                return $franchiseID = "00{$franchiseID}";
+        }
+    }
 
     /**
     * Separate out the picks in the string and return
@@ -140,8 +168,7 @@ class SlackClass{
     public static function getPrettyPlayers($playerIDs){
 
         //Retrieve the players from the DB
-        //$players = Mfl_players_table::find($playerIDs);
-        $players = Mfl_players_table::find($playerIDs);
+        $players = self::queryPlayers($playerIDs);
         //Array for adding players
         $playersArr = [];
 
@@ -168,9 +195,7 @@ class SlackClass{
     public static function getPrettyRoster($playerIDs){
 
         //Retrieve the players from the DB
-        $players = Mfl_players_table::whereIn('id', $playerIDs)
-                                        ->orderBy('name', 'asc')
-                                        ->get();
+        $players = self::queryPlayers($playerIDs);
         
         //Arrays for positions
         $qbArr = [];

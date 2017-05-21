@@ -36,7 +36,7 @@ $app->get('trade', function() use ($app) {
 });
 $app->get('bait', function() use ($app) {
     
-    Artisan::call('checktrade:update');
+    Artisan::call('tradebait:update');
 
     return "TEsting";
 });
@@ -61,17 +61,25 @@ $app->get('test', function() use ($app) {
         //Retreive all franchises that belong to this team
         $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
                                                 ->franchise_name;
-
+        
         //Build URL and retrieve the data
-        $mflDataUrl = SlackClass::getMflLeagueDataUrl('rosters', $leagueID, '', "&FRANCHISE={$franchiseID}");
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('assets', $leagueID);
         $mflDataObj = SlackClass::getMflData($mflDataUrl);
         
-        $playerObjs = $mflDataObj->rosters->franchise->player;
-        $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
-        //$playerIDs = implode(',', $playersArr);
+        $franchises = $mflDataObj->assets->franchise;
 
-        $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
-        $slackMessage = ">*{$franchiseName}* roster:\n";
-        $slackMessage .= implode("\n>", $prettyPlayers);
-        return $slackMessage;
+        foreach($franchises as $franchise){
+            if($franchise->id === $franchiseID){
+                //do work
+                $playerObjs = $franchise->players->player;
+                $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
+
+                $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
+                $slackMessage = ">*{$franchiseName}* roster:\n>";
+                $slackMessage .= implode("\n>", $prettyPlayers);
+
+                return $slackMessage;               
+            }
+            
+        }
 });

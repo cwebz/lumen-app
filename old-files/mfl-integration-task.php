@@ -18,11 +18,20 @@ checkRecentTrades();
 function checkRecentTrades(){
 
     //Get the URL and Data
-    $mflDataUrl = getMflLeagueDataUrl('rosters', LEAGUE_ID, WEEK, '&FRANCHISE=0001');
+    $mflDataUrl = getMflLeagueDataUrl('assets', LEAGUE_ID, WEEK,'');
     $mflDataObj = getMflData($mflDataUrl);
 
-$players = $mflDataObj->rosters->franchise->player;
+    $franchises = $mflDataObj->assets->franchise;
 
+            foreach($franchises as $franchise){
+            if($franchise->id === '0001'){
+                //do work
+                $draftPickObjs = $franchise->futureYearDraftPicks->draftPick;
+                $playerIDs = array_map(function($o){ return $o->pick; }, $draftPickObjs);
+                $test='stop';
+            }
+            
+        }
 $test = array_map(function($o){ return $o->id; }, $players);
 $aaa = implode(',', $test);
     //Make sure we always put this in an array for simplicity
