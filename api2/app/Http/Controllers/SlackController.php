@@ -7,6 +7,7 @@ use App\Classes\SlackClass;
 
 use App\Models\Mfl_slack_integration;
 use App\Models\Mfl_franchise_map;
+use App\Models\Mfl_players_table;
 
 class SlackController extends Controller
 {
@@ -53,7 +54,13 @@ class SlackController extends Controller
             case 'whois':
                 $this->getFranchiseMap($request);
                 break;
-            
+            case 'roster':
+                if((int)$textParts[1] < 12 && (int)$textParts[1] >= 0){
+                    $this->getFranchiseRoster($request, $textParts[1]);
+                }else{
+                    //Some sort of error response here
+                }                
+                break;
             default:
                 # code...
                 break;
@@ -112,4 +119,49 @@ class SlackController extends Controller
         
         SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
     }
+
+    /**
+    * Return slack message displaying the requested franchises team
+    *
+    * @param Rquest $request
+    * @param array $textParts
+    * @return JSON
+    */
+    public function getFranchiseRoster($request, $franchiseID){
+
+        //Get the team_id from the request
+        $leagueID = Mfl_slack_integration::find($request->input('team_id'))
+            ->mfl_league_id;
+
+        //Convert franchiseID to correct format 000#
+        switch (strlen($franchiseID)) {
+            case 1:
+                $franchiseID = "000{$franchiseID}";
+                break;
+            case 2:
+                $franchiseID = "00{$franchiseID}";
+                break;
+        }
+
+        //Retreive all franchises that belong to this team
+        $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
+                                                ->franchise_name;
+
+        //Build URL and retrieve the data
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('rosters', $leagueID, '', "&FRANCHISE={$franchiseID}");
+        $mflDataObj = SlackClass::getMflData($mflDataUrl);
+
+        $playerObjs = $mflDataObj->rosters->franchise->player;
+        $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
+
+        $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
+        $slackMessage = ">*{$franchiseName}* roster:\n>";
+        $slackMessage .= implode("\n>", $prettyPlayers);
+
+        SlackClass::sendSlackMsg($slackMessage, $request->input('response_url'));
+
+    }
+
+
+
 }

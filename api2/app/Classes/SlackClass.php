@@ -140,8 +140,8 @@ class SlackClass{
     public static function getPrettyPlayers($playerIDs){
 
         //Retrieve the players from the DB
+        //$players = Mfl_players_table::find($playerIDs);
         $players = Mfl_players_table::find($playerIDs);
-
         //Array for adding players
         $playersArr = [];
 
@@ -158,6 +158,64 @@ class SlackClass{
         }
 
         return $playersArr;
+    }
+
+    /**
+    * Take the player ID's and find them in the DB
+    *
+    * @param array $playerIDs
+    */
+    public static function getPrettyRoster($playerIDs){
+
+        //Retrieve the players from the DB
+        $players = Mfl_players_table::whereIn('id', $playerIDs)
+                                        ->orderBy('name', 'asc')
+                                        ->get();
+        
+        //Arrays for positions
+        $qbArr = [];
+        $rbArr = [];
+        $wrArr = [];
+        $teArr = [];
+
+        //Make sure to only process if results where returned
+        if(count($players)){
+            foreach($players as $player){
+                
+                //Put this in a string format to display in slack
+                $playerInfoString = "      *{$player->name}*"
+                                    . "    _{$player->team}_  "
+                                    . "    _{$player->position}_";
+
+                switch ($player->position){
+                    case 'QB':
+                        array_push($qbArr, $playerInfoString);
+                        break;
+                    case 'RB':
+                        array_push($rbArr, $playerInfoString);
+                        break;
+                    case 'WR':
+                        array_push($wrArr, $playerInfoString);
+                        break;
+                    case 'TE':
+                        array_push($teArr, $playerInfoString);
+                        break;
+                } 
+            }
+            $qbCount = count($qbArr);
+            array_unshift($qbArr, "*QB's* ({$qbCount})");
+
+            $rbCount = count($rbArr);
+            array_unshift($rbArr, "*RB's* ({$rbCount})");
+
+            $wrCount = count($wrArr);
+            array_unshift($wrArr, "*WR's* ({$wrCount})");
+
+            $teCount = count($teArr);
+            array_unshift($teArr, "*TE's* ({$teCount})");
+        }
+
+        return array_merge($qbArr, $rbArr, $wrArr, $teArr);
     }
 
     /**

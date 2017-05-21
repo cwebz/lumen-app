@@ -14,17 +14,17 @@ define('WEEK', '');
 $franchiseMap;
 
 //checkTradeBait();
-//checkRecentTrades();
+checkRecentTrades();
 function checkRecentTrades(){
-    //Get the franchise map file
-    global $franchiseMap;
-    $mapFile = @file_get_contents("files/franchise-map.json");
-    $franchiseMap = json_decode($mapFile);
 
     //Get the URL and Data
-    $mflDataUrl = getMflLeagueDataUrl(TRANSACTIONS, LEAGUE_ID, WEEK, '&TRANS_TYPE=trade&COUNT=5');
+    $mflDataUrl = getMflLeagueDataUrl('rosters', LEAGUE_ID, WEEK, '&FRANCHISE=0001');
     $mflDataObj = getMflData($mflDataUrl);
 
+$players = $mflDataObj->rosters->franchise->player;
+
+$test = array_map(function($o){ return $o->id; }, $players);
+$aaa = implode(',', $test);
     //Make sure we always put this in an array for simplicity
     if(!is_array($mflDataObj->transactions->transaction)){
         $transactions[0] = $mflDataObj->transactions->transaction;

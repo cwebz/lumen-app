@@ -42,8 +42,36 @@ $app->get('bait', function() use ($app) {
 });
 $app->get('map', 'SlackController@getFranchiseMap');
 
-$app->get('cron', function() use ($app) {
-    
-    TradeBaitService::update();
-    return "working";
+$app->get('test', function() use ($app) {
+
+        $franchiseID = '1';
+        //Get the team_id from the request
+        $leagueID = '73514';
+
+        //Convert franchiseID to correct format 000#
+        switch (strlen($franchiseID)) {
+            case 1:
+                $franchiseID = "000{$franchiseID}";
+                break;
+            case 2:
+                $franchiseID = "00{$franchiseID}";
+                break;
+        }
+
+        //Retreive all franchises that belong to this team
+        $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
+                                                ->franchise_name;
+
+        //Build URL and retrieve the data
+        $mflDataUrl = SlackClass::getMflLeagueDataUrl('rosters', $leagueID, '', "&FRANCHISE={$franchiseID}");
+        $mflDataObj = SlackClass::getMflData($mflDataUrl);
+        
+        $playerObjs = $mflDataObj->rosters->franchise->player;
+        $playerIDs = array_map(function($o){ return $o->id; }, $playerObjs);
+        //$playerIDs = implode(',', $playersArr);
+
+        $prettyPlayers = SlackClass::getPrettyRoster($playerIDs);
+        $slackMessage = ">*{$franchiseName}* roster:\n";
+        $slackMessage .= implode("\n>", $prettyPlayers);
+        return $slackMessage;
 });
