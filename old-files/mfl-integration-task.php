@@ -17,6 +17,19 @@ $franchiseMap;
 checkRecentTrades();
 function checkRecentTrades(){
 
+    $mflUrl = 'http://www74.myfantasyleague.com/2017/export?TYPE=transactions&L=73514&TRANS_TYPE=trade_proposal&JSON=1';
+
+    $opts = [
+        "http" => [
+            "header" => "Cookie: MFL_USER_ID=aRxs2sGavrXmhFT4fBCVPnc="
+        ]
+    ];
+
+    $context = stream_context_create($opts);
+    $file = file_get_contents($mflUrl, false, $context);
+    $decoded = json_decode($file);
+    return var_dump(json_decode($decoded));
+
     //Get the URL and Data
     $mflDataUrl = getMflLeagueDataUrl('assets', LEAGUE_ID, WEEK,'');
     $mflDataObj = getMflData($mflDataUrl);

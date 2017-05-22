@@ -70,12 +70,26 @@ class SlackClass{
     * Function to return the JSON object of the data requested
     *
     * @param string $dataUrl 
+    * @param string $cookie
     * @return string
     */
-    public static function getMflData($dataUrl){
-        //Get the contents of the url
-        $mflData = @file_get_contents($dataUrl);
-        
+    public static function getMflData($dataUrl, $cookie = ''){
+
+        //Check if a cookie is being passed through
+        if($cookie !== ''){
+            //Do more work cus we got cookies nom nom
+            $opts = [
+                "http" => [
+                    "header" => "Cookie: MFL_USER_ID={$cookie}"
+                ]
+            ];
+            $context = stream_context_create($opts);
+            $mflData = @file_get_contents($dataUrl, false, $context);
+        }else{
+            //Get the contents of the url
+            $mflData = @file_get_contents($dataUrl);
+        }
+
         //Check to make sure there is data
         if(!$mflData){
             exit("Failed to retrieve data from MFL");
