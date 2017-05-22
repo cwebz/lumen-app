@@ -62,7 +62,7 @@ class RegisteredUserService
 						$franchiseTwoGave = SlackClass::separatePlayersPicks($transaction->franchise2_gave_up);
 
 			
-						$franchiseTwoMsg = "*{$franchiseTwo}* Received:\n";
+						$franchiseTwoMsg = "*{$franchiseTwo}* Receives:\n";
 
 						if($franchiseOneGave->players){
 							$franchiseOneGave->prettyPlayers = SlackClass::getPrettyPlayers($franchiseOneGave->players);
@@ -77,7 +77,7 @@ class RegisteredUserService
 							$franchiseTwoMsg .= implode("\n", $franchiseOneGave->prettyPicks);
 						}
 
-						$franchiseOneMsg = "*{$franchiseOne}* Received:\n";
+						$franchiseOneMsg = "*{$franchiseOne}* Receives:\n";
 
 						if($franchiseTwoGave->players){
 							$franchiseTwoGave->prettyPlayers = SlackClass::getPrettyPlayers($franchiseTwoGave->players);
@@ -92,17 +92,16 @@ class RegisteredUserService
 							$franchiseOneMsg .= implode("\n", $franchiseTwoGave->prettyPicks);
 						}         
 				
-						$fullSlackMsg = "Trade completed between *{$franchiseOne}* and *{$franchiseTwo}*\n";
+						$fullSlackMsg = "Trade proposed:\n";
 						$fullSlackMsg .= "{$franchiseOneMsg}\n{$franchiseTwoMsg}";
 
-			}
+						//Send slack message and update
+						SlackClass::sendSlackMsg($fullSlackMsg, $slackChannel);
 
-                    SlackClass::sendSlackMsg($fullSlackMsg, $slackChannel);
-
-                    Mfl_checktrade_timestamps::updateOrCreate(
-                        ['mfl_league_id' => $leagueID],
-                        ['lasttrade_timestamp' => $transaction->timestamp]);
-
+						// Mfl_checktrade_timestamps::updateOrCreate(
+						// 	['mfl_league_id' => $leagueID],
+						// 	['lasttrade_timestamp' => $transaction->timestamp]);
+					}
                 }
 		    }
         }

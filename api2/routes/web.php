@@ -6,6 +6,7 @@ use App\Models\Mfl_franchise_map;
 use App\Models\Mfl_slack_integration;
 use App\Models\Mfl_tradebait_timestamps;
 use App\Classes\SlackClass;
+use App\Services\RegisteredUserService;
 
 use App\Services\TradeBaitService;
 use Illuminate\Support\Facades\Artisan;
@@ -46,10 +47,7 @@ $app->get('push', function() use ($app) {
     // SlackClass::sendSlackMsg('Forcing this', $request);
     });
 $app->get('bait', function() use ($app) {
-    
-    Artisan::call('tradebait:update');
-
-    return "TEsting";
+    RegisteredUserService::update();
 });
 $app->get('map', 'SlackController@getFranchiseMap');
 

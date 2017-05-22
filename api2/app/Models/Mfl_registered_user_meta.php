@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Mfl_registered_user_meta extends Model
 {
-    protected $table = 'Mfl_registered_user_meta';
+    protected $table = 'mfl_registered_user_meta';
 
     protected $primaryKey = 'meta_id';
 
