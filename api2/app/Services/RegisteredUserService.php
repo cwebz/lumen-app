@@ -30,6 +30,7 @@ class RegisteredUserService
 			
 			foreach($userLeagues as $league){
 
+				$metaID = $league->meta_id;
 				$leagueID = $league->league_id;
 				$slackChannel = $league->webhook;
             	$mostRecentProposal = $league->last_proposal;
@@ -98,9 +99,9 @@ class RegisteredUserService
 						//Send slack message and update
 						SlackClass::sendSlackMsg($fullSlackMsg, $slackChannel);
 
-						// Mfl_checktrade_timestamps::updateOrCreate(
-						// 	['mfl_league_id' => $leagueID],
-						// 	['lasttrade_timestamp' => $transaction->timestamp]);
+						Mfl_registered_user_meta::updateOrCreate(
+							['meta_id' => $metaID],
+						 	['last_proposal' => $transaction->timestamp]);
 					}
                 }
 		    }

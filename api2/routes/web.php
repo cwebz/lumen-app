@@ -26,8 +26,14 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
+$app->get('mfl-slack-register', 'RegisterFormController@index');
+
 //This is the only route for the slack integration
 $app->post('slack', 'SlackController@handleRequest');
+
+
+/////All this shit is just for testing
+
 
 $app->get('push', function() use ($app) {
 

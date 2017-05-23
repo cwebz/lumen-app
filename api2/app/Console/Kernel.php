@@ -6,6 +6,7 @@ use App\Console\Commands\FranchiseMaps;
 use App\Console\Commands\PlayersTable;
 use App\Console\Commands\TradeBait;
 use App\Console\Commands\CheckTrade;
+use App\Console\Commands\CheckTradeProposal;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
@@ -23,6 +24,7 @@ class Kernel extends ConsoleKernel
         PlayersTable::class,
         TradeBait::class,
         CheckTrade::class,
+        CheckTradeProposal::class,
     ];
 
     /**
@@ -46,6 +48,11 @@ class Kernel extends ConsoleKernel
         //Retrieves JSON and notify od Trade Bait Updates
         $schedule->call(function () {
             Artisan::call('tradebait:update');
+        })->everyFiveMinutes();
+
+        //Retrieves JSON and notify user of new proposal
+        $schedule->call(function () {
+            Artisan::call('checktradeproposal:update');
         })->everyFiveMinutes();
     }
 }

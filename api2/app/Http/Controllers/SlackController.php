@@ -65,6 +65,9 @@ class SlackController extends Controller
                 $slackMessage .= "\n";
                 $slackMessage .= $this->getFranchisePicks($request, $textParts[1]);
                 echo $slackMessage;
+            case 'register':
+
+                break;
             default:
                 # code...
                 break;
