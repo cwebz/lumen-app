@@ -8,6 +8,7 @@ use App\Classes\SlackClass;
 use App\Models\Mfl_slack_integration;
 use App\Models\Mfl_franchise_map;
 use App\Models\Mfl_players_table;
+use App\Http\Controllers\Controller;
 
 class SlackController extends Controller
 {

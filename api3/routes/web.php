@@ -31,6 +31,10 @@ Route::get('mfl-slack-register', 'RegisterFormController@index');
 //This is the only route for the slack integration
 Route::post('slack', 'SlackController@handleRequest');
 
+Route::get('help', 'SlackController@help');
+
+//This is the only route for the slack integration
+Route::get('register', 'RegisterFormController@index');
 
 /////All this shit is just for testing
 

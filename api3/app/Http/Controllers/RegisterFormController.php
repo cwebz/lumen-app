@@ -19,7 +19,7 @@ class RegisterFormController extends Controller
 
 
     public function index(){
-        return view('test');
+        return view('mfl-slack-form');
     }
     //
 }
