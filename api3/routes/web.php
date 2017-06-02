@@ -35,6 +35,8 @@ Route::get('help', 'SlackController@help');
 
 //This is the only route for the slack integration
 Route::get('register', 'RegisterFormController@index');
+Route::get('registered', 'RegisterFormController@success');
+Route::post('verify', 'RegisterFormController@verify');
 
 /////All this shit is just for testing
 

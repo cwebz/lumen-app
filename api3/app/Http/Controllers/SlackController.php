@@ -8,6 +8,7 @@ use App\Classes\SlackClass;
 use App\Models\Mfl_slack_integration;
 use App\Models\Mfl_franchise_map;
 use App\Models\Mfl_players_table;
+use App\Models\Mfl_temporary_url;
 use App\Http\Controllers\Controller;
 
 class SlackController extends Controller
@@ -67,7 +68,9 @@ class SlackController extends Controller
                 $slackMessage .= $this->getFranchisePicks($request, $textParts[1]);
                 echo $slackMessage;
             case 'register':
-
+                //Send link to the register page to their slack
+                //Some sort of cookie to expire if they take to long 
+                $this->sendRegisterLink($request);
                 break;
             default:
                 # code...
@@ -172,7 +175,7 @@ class SlackController extends Controller
     *
     * @param Rquest $request
     * @param array $textParts
-    * @return JSON
+    * @return String $slackMessage
     */
     public function getFranchisePicks($request, $franchiseID){
 
@@ -210,4 +213,23 @@ class SlackController extends Controller
         return $slackMessage;
     }
 
+    /**
+    * Register some data and send a temporary link to user 
+    *
+    * @param Request $request 
+    * @return String $slackMessage
+    */
+    public function sendRegisterLink(Request $request){
+
+        //Generate a random string to be used as the temp token
+        $token = str_random(12);
+        $url = url("register?token=$token");
+        var_dump($url);
+        
+        Mfl_temporary_url::updateOrCreate(
+            [ "url" => url("register") ,
+             "param" => $token ,
+             "slack_team" => $request->input('team_id') ]
+        );
+    }
 }

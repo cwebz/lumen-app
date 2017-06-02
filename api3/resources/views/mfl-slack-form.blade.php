@@ -24,7 +24,7 @@
 
             .panel {
                 margin: 0px auto;
-                margin-top: 20%;
+                margin-top: 5%;
                 width: 30%;
             }
 
@@ -42,42 +42,46 @@
         <div class="panel panel-default">
             <div class="panel-heading">Sign into your MFL account</div>
             <div class="panel-body">
+                {{ Form::open( array('action' => 'RegisterFormController@verify') ) }}
                 <div class="form-group">
-                    <form class="form-section">
-                        {!! Form::label('MFL Username or Email') !!}
+                    {{ Form::open( array('action' => 'RegisterFormController@verify') ) }}
+                    <div class="form-section">
+                        {!! Form::label('MFL Username or Email *') !!}
                         {!! Form::text('email', null, 
                             array('required', 
                                 'class'=>'form-control', 
                                 'placeholder'=>'Your e-mail address')) !!}
-                    </form>
-                    <form class="form-section"> 
-                        {!! Form::label('MFL Password') !!}
+                    </div>
+                    <div class="form-section"> 
+                        {!! Form::label('MFL Password *') !!}
                         {!! Form::text('password', null, 
                             array('required', 
                                 'class'=>'form-control', 
                                 'placeholder'=>'Your password')) !!}
-                    </form>
-                    <form class="form-section"> 
+                    </div>
+                    <div class="form-section"> 
                         <div class="alert alert-info">
                             <p>Slack username to send alerts to.</p>
                             <p>Multiple names will have a private slack group
                             created.</p>
                         </div>
-                        {!! Form::label('Slack Username(s)') !!}
-                        {!! Form::text('textarea', null, 
+                        {!! Form::label('Slack Username(s) *') !!}
+                        {!! Form::text('username-1', null, 
                             array('required', 
                                 'class'=>'form-control slack-name')) !!}
 
-                        {!! Form::text('textarea', null, 
+                        {!! Form::text('username-2', null, 
                             array('class'=>'form-control slack-name')) !!}
                         
-                        {!! Form::text('textarea', null, 
+                        {!! Form::text('username-3', null, 
                             array('class'=>'form-control slack-name')) !!}
-                    </form>
+                    </div>
 
                     {!! Form::submit('Register',
                         array('class'=>'btn btn-primary')) !!}
+
                 </div>
+                {{ Form::close() }}
             </div>
             </div>
         </div>
