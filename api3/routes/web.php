@@ -26,17 +26,22 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+//Working 404
 Route::get('mfl-slack-register', 'RegisterFormController@index');
 
-//This is the only route for the slack integration
-Route::post('slack', 'SlackController@handleRequest');
-
+//Method does not exist?
 Route::get('help', 'SlackController@help');
 
-//This is the only route for the slack integration
+//Working 404
 Route::get('register', 'RegisterFormController@index');
+
+//Method success() does not exist
 Route::get('registered', 'RegisterFormController@success');
+
+
 Route::post('verify', 'RegisterFormController@verify');
+Route::post('slack', 'SlackController@handleRequest');
+
 
 /////All this shit is just for testing
 

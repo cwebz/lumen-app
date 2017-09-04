@@ -41,11 +41,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('DB_X_HOST', '127.0.0.1'),
-            'port' => env('DB_X_PORT', '3306'),
-            'database' => env('DB_X_DATABASE', 'forge'),
-            'username' => env('DB_X_USERNAME', 'forge'),
-            'password' => env('DB_X_PASSWORD', ''),
+            'host' => env('DB__HOST', '127.0.0.1'),
+            'port' => env('DB__PORT', '3306'),
+            'database' => env('DB__DATABASE', 'mfl-api'),
+            'username' => env('DB__USERNAME', 'homestead'),
+            'password' => env('DB__PASSWORD', 'secret'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',

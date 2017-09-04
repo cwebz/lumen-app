@@ -102,10 +102,11 @@ class SlackController extends Controller
     * @return JSON
     */
     public function getFranchiseMap($request){
-        
-        //Get the team_id from the request
-        $leagueID = Mfl_slack_integration::find($request->input('team_id'))
-            ->mfl_league_id;
+           
+        //Get the integrated league based on the request
+        $integratedLeague = $this->getIntegratedLeagueFromRequest($request);
+
+        $leagueID = $integratedLeague->mfl_league_id;
         
         //Retreive all franchises that belong to this team
         $franchises = Mfl_franchise_map::where(
@@ -136,23 +137,29 @@ class SlackController extends Controller
     */
     public function getFranchiseRoster($request, $franchiseID){
 
-        //Get the team_id from the request
-        $leagueID = Mfl_slack_integration::find($request->input('team_id'))
-                                                ->mfl_league_id;
+        //Get the integrated league based on the request
+        $integratedLeague = $this->getIntegratedLeagueFromRequest($request);
+
+        $leagueID = $integratedLeague->mfl_league_id;
+        
+        $commishCookie = $integratedLeague->commish_cookie;
 
         //Convert franchiseID to correct format 000#
         $franchiseID = SlackClass::formatFranchiseID($franchiseID);
 
         //Retreive all franchises that belong to this team
-        $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
+        $franchiseName = Mfl_franchise_map::findOrFail("{$leagueID}_{$franchiseID}")
                                                 ->franchise_name;
         
         ////!!!!!Add error log/slack to msg if team not found
 
         //Build URL and retrieve the data
         $mflDataUrl = SlackClass::getMflLeagueDataUrl('assets', $leagueID);
-        $mflDataObj = SlackClass::getMflData($mflDataUrl);
 
+        //We now need to get the commish cookie for the league
+        $mflDataObj = SlackClass::getMflData($mflDataUrl, $commishCookie);
+
+        
         $franchises = $mflDataObj->assets->franchise;
 
         foreach($franchises as $franchise){
@@ -179,22 +186,26 @@ class SlackController extends Controller
     */
     public function getFranchisePicks($request, $franchiseID){
 
+        //Get the integrated league based on the request
+        $integratedLeague = getIntegratedLeagueFromRequest($request);
+
         //Get the team_id from the request
-        $leagueID = Mfl_slack_integration::find($request->input('team_id'))
-                                                ->mfl_league_id;
+        $leagueID =  $integratedLeague->mfl_league_id;
+
+        $commishCookie = $integratedLeague->commish_cookie;
 
         //Convert franchiseID to correct format 000#
         $franchiseID = SlackClass::formatFranchiseID($franchiseID);
 
         //Retreive all franchises that belong to this team
-        $franchiseName = Mfl_franchise_map::find("{$leagueID}_{$franchiseID}")
+        $franchiseName = Mfl_franchise_map::findOrFail("{$leagueID}_{$franchiseID}")
                                                 ->franchise_name;
         
         ////!!!!!Add error log/slack to msg if team not found
 
         //Build URL and retrieve the data
         $mflDataUrl = SlackClass::getMflLeagueDataUrl('assets', $leagueID);
-        $mflDataObj = SlackClass::getMflData($mflDataUrl);
+        $mflDataObj = SlackClass::getMflData($mflDataUrl, $commishCookie);
 
         $franchises = $mflDataObj->assets->franchise;
 
@@ -231,5 +242,17 @@ class SlackController extends Controller
              "param" => $token ,
              "slack_team" => $request->input('team_id') ]
         );
+    }
+
+    public function getIntegratedLeagueFromRequest($request){
+        
+        //Check the request 
+        if ( ! $slackTeamID = $request->input('team_id') ){
+            return "Slack Team ID missing.";
+        }
+
+        //Get the team_id from the request
+        return Mfl_slack_integration::findOrFail($slackTeamID);
+
     }
 }
