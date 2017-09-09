@@ -1,7 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
-/config/databasep.php
+/config/database.php
 /storage/*.key
 /vendor
 /.idea
