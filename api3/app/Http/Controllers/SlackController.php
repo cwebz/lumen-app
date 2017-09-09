@@ -187,7 +187,7 @@ class SlackController extends Controller
     public function getFranchisePicks($request, $franchiseID){
 
         //Get the integrated league based on the request
-        $integratedLeague = getIntegratedLeagueFromRequest($request);
+        $integratedLeague = $this->getIntegratedLeagueFromRequest($request);
 
         //Get the team_id from the request
         $leagueID =  $integratedLeague->mfl_league_id;
